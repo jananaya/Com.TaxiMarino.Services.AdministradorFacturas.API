@@ -2,6 +2,7 @@ using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Com.TaxiMarino.Services.AdministradorFacturas.API.Infrastructure;
 using FluentValidation;
 using System.Reflection;
+using Com.TaxiMarino.Services.AdministradorFacturas.API.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -27,6 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
