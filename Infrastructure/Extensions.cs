@@ -15,6 +15,7 @@ public static class Extensions
         services.AddScoped<IDetallesFacturaRepository, DetallesFacturaRepository>();
 
         services.AddScoped<IFacturasManager, FacturasManager>();
+        services.AddScoped<IDetallesFacturaManager, DetallesFacturaManager>();
 
         services.AddTransient<DbContext, AppDbContext>();
         services.AddDbContext<AppDbContext>(options =>
