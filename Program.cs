@@ -1,4 +1,8 @@
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 using Com.TaxiMarino.Services.AdministradorFacturas.API.Infrastructure;
+using FluentValidation;
+using System.Reflection;
+using Com.TaxiMarino.Services.AdministradorFacturas.API.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -8,6 +12,11 @@ var configuration = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+builder.Services.AddFluentValidationAutoValidation(configuration =>
+{
+    configuration.DisableBuiltInModelValidation = true;
+});
 builder.Services.AddInfrastructure(configuration);
 
 var app = builder.Build();
@@ -19,6 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
