@@ -28,7 +28,7 @@ public class FacturasManager : IFacturasManager
         {
             Fecha = facturaDto.Fecha.ParseDate(),
             Cliente = facturaDto.Cliente,
-            Total = facturaDto.Total
+            Total = 0
         };
 
         _facturasRepository.Add(factura);
@@ -61,7 +61,6 @@ public class FacturasManager : IFacturasManager
 
         factura.Fecha = facturaDto.Fecha.ParseDate();
         factura.Cliente = facturaDto.Cliente;
-        factura.Total = facturaDto.Total;
 
         _facturasRepository.Update(factura);
         await _facturasRepository.SaveAsync();
