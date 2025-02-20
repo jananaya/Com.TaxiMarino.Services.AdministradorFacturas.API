@@ -10,7 +10,8 @@ public static class Extensions
 {
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<IFacturasRepository, FacturasRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IFacturasRepository, FacturasRepository>();
         services.AddScoped<IDetallesFacturaRepository, DetallesFacturaRepository>();
 
         services.AddScoped<IFacturasManager, FacturasManager>();
