@@ -20,7 +20,10 @@ public static class Extensions
         services.AddTransient<DbContext, AppDbContext>();
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseNpgsql(configuration.GetConnectionString("AppDbContext") ?? throw new ArgumentNullException("AppDbContext"))
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection") ??
+                       configuration.GetConnectionString("AppDbContext");
+
+            options.UseNpgsql(connectionString ?? throw new ArgumentNullException("AppDbContext"))
                 .LogTo(Console.WriteLine, LogLevel.Information);
             options.UseLazyLoadingProxies();
         });
