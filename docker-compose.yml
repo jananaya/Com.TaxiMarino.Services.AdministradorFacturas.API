@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: administrador_facturas
+      POSTGRES_USER: mi_usuario
+      POSTGRES_PASSWORD: mi_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mi_usuario -d administrador_facturas"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+
+  app:
+    container_name: administrador-facturas-api-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - .:/app
+      - ~/.nuget/packages:/root/.nuget/packages
+    ports:
+      - "5119:5119"
+    environment:
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DOTNET_WATCH_SUPPRESS_MSBUILD_INCREMENTALISM=1
+      - ConnectionStrings__DefaultConnection=Host=db;Port=${POSTGRES_PORT:-5432};Database=${POSTGRES_DB:-administrador_facturas};Username=${POSTGRES_USER:-mi_usuario};Password=${POSTGRES_PASSWORD:-mi_password}
+
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "dotnet ef database update && dotnet watch run --urls http://0.0.0.0:5119"
+
+volumes:
+  postgres_data:

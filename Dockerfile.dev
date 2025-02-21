@@ -1,0 +1,16 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /app
+
+COPY *.csproj ./
+RUN dotnet restore
+
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+
+COPY . . 
+RUN rm -f appsettings.json appsettings.Development.json
+
+RUN dotnet build -c Debug --no-restore
+
+CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5119"]
